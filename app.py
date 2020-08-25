@@ -1,4 +1,6 @@
 from chalice import Chalice
+from login import Login
+from tda import client
 
 app = Chalice(app_name='AlgoTrading_Chalice')
 
@@ -7,6 +9,11 @@ app = Chalice(app_name='AlgoTrading_Chalice')
 def index():
     return {'hello': 'world'}
 
+@app.route('/quote')
+def quote():
+    t = Login()
+    response = t.get_quote('AAPL').json()
+    return response
 
 # The view function above will return {"hello": "world"}
 # whenever you make an HTTP GET request to '/'.
