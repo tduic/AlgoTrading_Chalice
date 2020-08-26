@@ -3,19 +3,19 @@
     {
       "name": "default-role",
       "resource_type": "iam_role",
-      "role_arn": "arn:aws:iam::761881148263:role/AlgoTrading-dev",
-      "role_name": "AlgoTrading-dev"
+      "role_arn": "arn:aws:iam::761881148263:role/AlgoTrading_Chalice-dev",
+      "role_name": "AlgoTrading_Chalice-dev"
     },
     {
       "name": "api_handler",
       "resource_type": "lambda_function",
-      "lambda_arn": "arn:aws:lambda:us-east-2:761881148263:function:AlgoTrading-dev"
+      "lambda_arn": "arn:aws:lambda:us-east-2:761881148263:function:AlgoTrading_Chalice-dev"
     },
     {
       "name": "rest_api",
       "resource_type": "rest_api",
-      "rest_api_id": "ooff75re8l",
-      "rest_api_url": "https://ooff75re8l.execute-api.us-east-2.amazonaws.com/api/"
+      "rest_api_id": "85b3sj3plj",
+      "rest_api_url": "https://85b3sj3plj.execute-api.us-east-2.amazonaws.com/api/"
     }
   ],
   "schema_version": "2.0",

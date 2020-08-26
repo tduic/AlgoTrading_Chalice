@@ -1,3 +1,4 @@
+chalicelib/config.txt
 .chalice/deployments/
 .chalice/venv/
 .token
