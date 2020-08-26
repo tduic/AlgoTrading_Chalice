@@ -1,5 +1,6 @@
 chalicelib/config.py
 chalicelib/.token
+**/__pycache__
 .chalice/deployments/
 .chalice/venv/
 .DS_Store
