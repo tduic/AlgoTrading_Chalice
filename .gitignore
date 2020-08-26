@@ -1,4 +1,4 @@
-chalicelib/config.txt
+chalicelib/config.py
 .chalice/deployments/
 .chalice/venv/
 .token
