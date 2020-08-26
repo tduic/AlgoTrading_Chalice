@@ -1,6 +1,6 @@
 import os
 from tda import auth, client
-from constants import *
+from chalicelib.constants import *
 
 def Login():
     try:
