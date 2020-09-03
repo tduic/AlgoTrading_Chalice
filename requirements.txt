@@ -1,2 +1,3 @@
+holidays
 tda-api
 webdriver_manager
