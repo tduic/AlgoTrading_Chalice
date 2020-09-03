@@ -23,6 +23,11 @@ def quote(symbol):
 @app.route('/equity/buy', methods=['POST'])
 def equity_buy():
     t = Login()
+    if afterHours():
+        return {
+            'code': 'error',
+            'message': 'markets are not open'
+        }
 
     webhook_message = app.current_request.json_body
     if 'passphrase' not in webhook_message:
@@ -70,6 +75,11 @@ def equity_buy():
 @app.route('/equity/sell', methods=['POST'])
 def equity_sell():
     t = Login()
+    if afterHours():
+        return {
+            'code': 'error',
+            'message': 'markets are not open'
+        }
 
     webhook_message = app.current_request.json_body
     if 'passphrase' not in webhook_message:
@@ -119,6 +129,11 @@ def option_chain(symbol):
 @app.route('/option/order', methods=['POST'])
 def option_order():
     t = Login()
+    if afterHours():
+        return {
+            'code': 'error',
+            'message': 'markets are not open'
+        }
 
     webhook_message = app.current_request.json_body
     if 'passphrase' not in webhook_message:
@@ -133,13 +148,11 @@ def option_order():
         }
 
     optionChain = t.get_option_chain(webhook_message['ticker']).json()[webhook_message['putCall']]
-    filepath = 'viableOptions'
-    content = webhook_message['ticker'] + webhook_message['putCall'] + str(datetime.datetime.now())
-    writeFile(filepath, 'at', content)
+    print(optionChain)
 
     return {
-        'code': 'printed',
-        'message': 'hello'
+        'code': 'success',
+        'message': 'printed {} option chain'.format(webhook_message['ticker'])
     }
 
     # symbol = OptionSymbol(
