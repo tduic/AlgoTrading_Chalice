@@ -1,4 +1,5 @@
 chalicelib/config.py
+chalicelib/token
 chalicelib/.token
 **/__pycache__
 .chalice/deployments/
