@@ -1,6 +1,10 @@
-import os
-from tda import auth, client
+import pickle, os
+from tda import client
+from chalicelib import auth
 from chalicelib.config import *
+
+import boto3
+s3 = boto3.client('s3')
 
 def Login():
     t = auth.client_from_token_file(TOKEN_PATH, API_KEY)
