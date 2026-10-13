@@ -45,6 +45,6 @@ pip install -r requirements.txt   # chalice, tda-api, holidays, webdriver_manage
 chalice deploy                    # deploy to AWS Lambda + API Gateway
 ```
 
-Configuration (API key, account ID, token path, redirect URI, passphrase) lives in `chalicelib/config.py`.
+Configuration (API key, account ID, token path, redirect URI, passphrase) lives in `chalicelib/config.py`, which is gitignored. Copy `chalicelib/config.example.py` to `chalicelib/config.py` and fill in your own values.
 
 > ⚠️ This is a personal project for educational purposes. Automated trading carries real financial risk — use at your own risk.
