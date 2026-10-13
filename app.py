@@ -41,8 +41,9 @@ def equity_buy():
             'message': 'unauthorized, passphrase invalid'
         }
 
-    balance = t.get_account(ACCOUNT_ID, fields=t.Account.Fields.POSITIONS).json()['securitiesAccount']['currentBalances']['cashAvailableForTrading']
-    positions = t.get_account(ACCOUNT_ID, fields=t.Account.Fields.POSITIONS).json()['securitiesAccount']['positions']
+    account = t.get_account(ACCOUNT_ID, fields=t.Account.Fields.POSITIONS).json()['securitiesAccount']
+    balance = account['currentBalances']['cashAvailableForTrading']
+    positions = account['positions']
 
     for pos in positions:
         if webhook_message['ticker'] == pos['instrument']['symbol']:
@@ -51,7 +52,7 @@ def equity_buy():
                 'message': 'already long in {}'.format(webhook_message['ticker'])
             }
 
-    if webhook_message['price'] < balance:
+    if webhook_message['price'] * webhook_message['quantity'] < balance:
         order_spec = equity_buy_limit(
             webhook_message['ticker'],
             webhook_message['quantity'],

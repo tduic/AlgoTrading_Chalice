@@ -23,8 +23,9 @@ class Resp:
 class FakeTD:
     Account = types.SimpleNamespace(Fields=types.SimpleNamespace(POSITIONS="positions"))
 
-    def __init__(self, cash=1000.0, positions=None, chain=None, order_id="ORD-1"):
+    def __init__(self, cash=10000.0, positions=None, chain=None, order_id="ORD-1"):
         self.cash, self.positions = cash, positions or []
+        self.account_reads = 0
         self.chain = chain or {"callExpDateMap": {"x": 1}, "putExpDateMap": {"y": 2}}
         self.order_id = order_id
         self.placed = []
@@ -33,6 +34,7 @@ class FakeTD:
         return Resp({symbol: {"lastPrice": 123.45}})
 
     def get_account(self, account_id, fields=None):
+        self.account_reads += 1
         return Resp({"securitiesAccount": {
             "currentBalances": {"cashAvailableForTrading": self.cash},
             "positions": self.positions}})
@@ -125,6 +127,21 @@ def test_buy_refuses_when_price_exceeds_cash(td):
     td.cash = 100.0
     got = call("/equity/buy", "POST", hook(price=150.0))
     assert got["message"] == "balance not enough to cover trade" and td.placed == []
+
+
+def test_buy_compares_total_cost_not_share_price_to_cash(td):
+    # Regression: 10 shares at $150 = $1,500 against $1,000 cash used to pass
+    # because only the $150 share price was compared with the balance.
+    td.cash = 1000.0
+    got = call("/equity/buy", "POST", hook(quantity=10, price=150.0))
+    assert got["message"] == "balance not enough to cover trade" and td.placed == []
+    got = call("/equity/buy", "POST", hook(quantity=6, price=150.0))   # $900
+    assert got["code"] == "success" and len(td.placed) == 1
+
+
+def test_buy_reads_account_once(td):
+    call("/equity/buy", "POST", hook(quantity=1))
+    assert td.account_reads == 1
 
 
 def test_buy_requires_an_order_id(td):
