@@ -1,3 +1,4 @@
 holidays
+pytz
 tda-api
 webdriver_manager

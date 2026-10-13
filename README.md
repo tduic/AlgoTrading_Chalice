@@ -19,7 +19,7 @@ The app exposes a small HTTP API. Trade endpoints accept JSON webhook payloads, 
 ### Safety & guardrails
 
 - **Passphrase auth** — every trade webhook must include a matching `passphrase`, otherwise it's rejected.
-- **Market hours check** — `afterHours()` blocks trades outside 09:30–16:00 ET, on weekends, and on US market holidays.
+- **Market hours check** — `afterHours()` blocks trades outside 09:30–16:00 ET, on weekends, and on NYSE market holidays (`holidays.financial_holidays('NYSE')`; early-close days are not modeled).
 - **Position-aware** — won't double-buy a ticker it's already long, and won't sell below the position's average price.
 - **Balance check** — refuses buys it can't cover with available cash.
 
@@ -41,7 +41,7 @@ OAuth tokens for the TD Ameritrade API are stored in and refreshed from an S3 bu
 ## Setup
 
 ```bash
-pip install -r requirements.txt   # chalice, tda-api, holidays, webdriver_manager
+pip install -r requirements.txt   # chalice, tda-api, holidays, pytz, webdriver_manager
 chalice deploy                    # deploy to AWS Lambda + API Gateway
 ```
 

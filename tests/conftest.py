@@ -8,7 +8,7 @@ selenium and webdriver_manager. chalicelib/config.py is gitignored (it holds
 real credentials), so tests load chalicelib/config.example.py in its place.
 
 `holidays` and `pytz` are real (pure-Python) deps: the market-hours guard is
-tested against the actual US holiday calendar.
+tested against the real NYSE holiday calendar.
 """
 import pathlib
 import runpy

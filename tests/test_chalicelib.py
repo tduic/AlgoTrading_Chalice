@@ -1,7 +1,8 @@
-"""chalicelib: market-hours guard (real US holiday calendar), file helpers,
+"""chalicelib: market-hours guard (real NYSE holiday calendar), file helpers,
 the S3-backed OAuth token plumbing in auth.py, and login.py — all against
 stubbed boto3/tda/requests_oauthlib/selenium."""
 import datetime
+import pathlib
 import pickle
 import sys
 
@@ -31,6 +32,13 @@ def et(*args):
     (et(2020, 8, 23, 12, 0), True),          # Sunday
     (et(2020, 7, 3, 12, 0), True),           # Independence Day (observed)
     (et(2020, 12, 25, 12, 0), True),         # Christmas
+    # NYSE calendar, not US federal holidays (regression):
+    (et(2020, 10, 12, 12, 0), False),        # Columbus Day: federal holiday, NYSE open
+    (et(2020, 11, 11, 12, 0), False),        # Veterans Day: federal holiday, NYSE open
+    (et(2021, 4, 2, 12, 0), True),           # Good Friday: NYSE closed
+    (et(2023, 4, 7, 12, 0), True),           # Good Friday
+    (et(2023, 6, 19, 12, 0), True),          # Juneteenth: NYSE closed since 2022
+    (et(2021, 6, 18, 12, 0), False),         # Juneteenth observed 2021: NYSE open
 ])
 def test_after_hours(now, closed):
     assert helpers.afterHours(now) is closed
@@ -164,3 +172,12 @@ def test_replace_token_runs_browser_login(monkeypatch):
                         lambda d, k, u, p: flows.append((d, k, u, p)) or "fresh")
     assert login.replaceToken() == "fresh"
     assert flows == [(driver, API_KEY, REDIRECT_URI, TOKEN_PATH)]
+
+
+def test_runtime_requirements_cover_helpers_imports():
+    # Regression: helpers.afterHours imports pytz, which requirements.txt
+    # (what `chalice deploy` packages) did not list.
+    reqs = (pathlib.Path(__file__).resolve().parent.parent / "requirements.txt").read_text()
+    names = {line.split("=")[0].split("<")[0].split(">")[0].strip().lower()
+             for line in reqs.splitlines() if line.strip() and not line.startswith("#")}
+    assert {"pytz", "holidays"} <= names

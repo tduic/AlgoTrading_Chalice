@@ -14,13 +14,15 @@ def writeFile(path, type, content):
 def afterHours(now = None):
     import datetime, pytz, holidays
     tz = pytz.timezone('US/Eastern')
-    us_holidays = holidays.US()
+    # NYSE trading holidays, not US federal ones: NYSE is open on Columbus
+    # and Veterans Day and closed on Good Friday
+    market_holidays = holidays.financial_holidays('NYSE')
     if not now:
         now = datetime.datetime.now(tz)
     openTime = datetime.time(hour = 9, minute = 30, second = 0)
     closeTime = datetime.time(hour = 16, minute = 0, second = 0)
     # If a holiday
-    if now.strftime('%Y-%m-%d') in us_holidays:
+    if now.strftime('%Y-%m-%d') in market_holidays:
         return True
     # If before 0930 or after 1600
     if (now.time() < openTime) or (now.time() > closeTime):
